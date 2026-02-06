@@ -1,0 +1,16 @@
+<h2>Student List</h2>
+
+<a href = "{% url 'student_add'%}">ADD Students</a>
+<hr>
+
+{% for student in object_list %}
+  <p>
+    {{student.name}} | {{student.age}} | {{student.email}}
+    <a href = "{%url 'student_edit' student.id%}">EDIT Student</a>
+    <a href = "{%url 'student_delete' student.id%}">DELETE Student</a>
+  </p>
+
+{%empty%}
+<p>No Student Found</p>
+
+{%endfor%}
