@@ -1,8 +1,5 @@
 from django.db import models
 
-from django.db import models
-from django.utils import timezone  # YEH IMPORT ADD KARO
-
 class Student(models.Model):
     name = models.CharField(max_length=100, verbose_name="Student Name")
     email = models.EmailField(unique=True, verbose_name="Email Address")
