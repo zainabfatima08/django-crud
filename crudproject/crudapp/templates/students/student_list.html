@@ -1,16 +1,97 @@
-<h2>Student List</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Student List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
 
-<a href = "{% url 'student_add'%}">ADD Students</a>
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .action-forms {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .action-forms form button {
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Students</h1>
+
+<!-- ADD STUDENT -->
+<h3>Add New Student</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="action" value="add">
+    <button type="submit">Add Student</button>
+</form>
+
 <hr>
 
-{% for student in object_list %}
-  <p>
-    {{student.name}} | {{student.age}} | {{student.email}}
-    <a href = "{%url 'student_edit' student.id%}">EDIT Student</a>
-    <a href = "{%url 'student_delete' student.id%}">DELETE Student</a>
-  </p>
+{% if objects %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Course</th>
+            <th>Age</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in objects %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.course }}</td>
+            <td>{{ student.age }}</td>
+            <td>
+                <div class="action-forms">
 
-{%empty%}
-<p>No Student Found</p>
+                    <!-- EDIT FORM -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="object_id" value="{{ student.id }}">
+                        {{ form.as_p }}
+                        <button type="submit">Edit</button>
+                    </form>
 
-{%endfor%}
+                    <!-- DELETE FORM -->
+                    <form method="post" onsubmit="return confirm('Delete this student?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="object_id" value="{{ student.id }}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No students found.</p>
+{% endif %}
+
+</body>
+</html>
